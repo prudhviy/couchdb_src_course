@@ -2,11 +2,16 @@
 
 -export([perimeter/1]).
 
-perimeter({square, Side}) ->
-	4 * Side;
-perimeter({circle, Radius}) ->
-	2 * (22/7) * Radius;
-perimeter({triangle, A, B, C}) ->
-	A + B + C;
-perimeter({rectangle, Length, Width}) ->
-	2 * Length + 2 * Width.
+perimeter(Form) ->
+	case Form of
+		{square, Side} ->
+			{square, 4 * Side};
+		{circle, Radius} ->
+			{circle, 2 * (22/7) * Radius};
+		{triangle, A, B, C} ->
+			{triangle, A + B + C};
+		{rectangle, Length, Width} ->
+			{rectangle, 2 * Length + 2 * Width};
+		_ ->
+			{unknown}
+	end.

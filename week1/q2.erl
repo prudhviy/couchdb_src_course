@@ -1,8 +1,9 @@
 -module(q2).
 
 -export([convert/1]).
+-import(q1, [c2f/1, f2c/1]).
 
 convert({c,C}) ->
-	(C * (9/5)) + 32;
+	{fehrenheit, q1:c2f(C)};
 convert({f,F}) ->
-	(F - 32) * (5/9).
+	{celsius, q1:f2c(F)}.
