@@ -20,22 +20,32 @@ fridge1(FoodList) ->
 			ok
 	end.
 
-store(Pid, Food) ->
-	Pid ! {self(), {store, Food}},
+store(Food) ->
+	fridge ! {self(), {store, Food}},
 	receive
 		{Pid, Msg} -> Msg
 	after 3000 ->
 		timeout
 	end.
 
-take(Pid, Food) ->
-	Pid ! {self(), {take, Food}},
+take(Food) ->
+	fridge ! {self(), {take, Food}},
 	receive
 		{Pid, Msg} -> Msg
 	after 3000 ->
 		timeout
 	end.
 
-start(FoodList) ->
-	spawn(?MODULE, fridge1, [FoodList]).
+start() ->
+	restart().
+
+restart() ->
+	process_flag(trap_exit, true),
+	Pid = spawn_link(?MODULE, fridge1, [apple, banana]),
+	register(fridge, Pid),
+	receive
+		{'EXIT', Pid, normal} -> {ok, normal_exit};
+		{'EXIT', Pid, shutdown} -> {ok, shutdown_exit};
+		{'EXIT', Pid, _} -> restart()
+	end.
 
